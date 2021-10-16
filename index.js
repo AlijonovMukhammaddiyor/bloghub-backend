@@ -42,7 +42,7 @@ app.use("/api/user", userRoute);
 app.use("/api/posts", postsRoute);
 app.use("/api/categories", catRoute);
 
-app.listen(4000, function (err) {
+app.listen(process.env.PORT || 4000, function (err) {
 	if (err) console.error(err);
 	else console.log("The server is running on port 4000");
 });
