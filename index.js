@@ -62,9 +62,12 @@ const uploadS3 = multer({
 });
 //upload the image
 app.post("/:id/upload", uploadS3.single("file"), (req, res) => {
+	console.log("uploading");
 	const location = req.file.location;
+	console.log(location);
 	const id = req.params.id;
-	Post.findByIdAndUpdate(id, { Img }, { new: true })
+	console.log(id);
+	Post.findByIdAndUpdate(id, { Img: location }, { new: true })
 		.then((post) => res.status(200).json({ success: true, post: post }))
 		.catch((err) => res.status(400).json({ success: false, error: err }));
 });
