@@ -70,12 +70,17 @@ router.get("/:id", async (req, res) => {
 
 //GET ALL POSTS
 router.get("/", async (req, res) => {
+	// console.log("here");
 	const username = req.query.user;
 	const catName = req.query.cat;
+	console.log(username);
 	try {
 		let posts;
 		if (username) {
-			posts = await Post.find({ username });
+			console.log("username");
+			posts = await Post.find({
+				"author.name": username,
+			});
 		} else if (catName) {
 			posts = await Post.find({
 				category: {
@@ -83,6 +88,7 @@ router.get("/", async (req, res) => {
 				},
 			});
 		} else {
+			console.log("here");
 			posts = await Post.find();
 		}
 		res.status(200).json(posts);

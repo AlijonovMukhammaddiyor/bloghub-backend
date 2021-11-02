@@ -36,6 +36,10 @@ const PostSchema = new mongoose.Schema(
 				type: mongoose.Schema.Types.ObjectId,
 				required: true,
 			},
+			profilePic: {
+				type: String,
+				default: "user.jpeg",
+			},
 		},
 		likes: {
 			type: Number,
