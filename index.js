@@ -11,6 +11,7 @@ const multerS3 = require("multer-s3");
 const aws = require("aws-sdk");
 // const shortid = require("shortid");
 const Post = require("./models/Post");
+const User = require("./models/User");
 
 const app = express();
 
@@ -48,11 +49,17 @@ const uploadS3 = multer({
 });
 //upload the image
 app.post("/:id/upload", uploadS3.single("file"), (req, res) => {
-	console.log("uploading");
 	const location = req.file.location;
 	const id = req.params.id;
-	console.log(id);
 	Post.findByIdAndUpdate(id, { Img: location }, { new: true })
+		.then((post) => res.status(200).json({ success: true, post: post }))
+		.catch((err) => res.status(400).json({ success: false, error: err }));
+});
+
+app.post("/user/:id/upload", uploadS3.single("file"), (req, res) => {
+	const location = req.file.location;
+	const id = req.params.id;
+	User.findByIdAndUpdate(id, { profilePic: location }, { new: true })
 		.then((post) => res.status(200).json({ success: true, post: post }))
 		.catch((err) => res.status(400).json({ success: false, error: err }));
 });
