@@ -9,7 +9,7 @@ const multer = require("multer");
 const cors = require("cors");
 const multerS3 = require("multer-s3");
 const aws = require("aws-sdk");
-const shortid = require("shortid");
+// const shortid = require("shortid");
 const Post = require("./models/Post");
 
 const app = express();
@@ -27,30 +27,16 @@ mongoose
 	.then(console.log("Connected"))
 	.catch((err) => console.error(err));
 
-// const storage = multer.diskStorage({
-// 	destination: (req, file, cb) => {
-// 		cb(null, "images");
-// 	},
-// 	filename: (req, file, cb) => {
-// 		cb(null, req.body.name);
-// 	},
-// });
-
-// const upload = multer({ storage: storage });
-
-// for AWS
-const accessKeyId = process.env.AWS_ACCESS_KEY;
-const secretAccessKey = process.env.AWS_SECRET_KEY;
-
 const s3 = new aws.S3({
-	accessKeyId,
-	secretAccessKey,
+	accessKeyId: process.env.AWS_ACCESS_KEY,
+	secretAccessKey: process.env.AWS_SECRET_KEY,
+	region: "ap-northeast-2",
 });
 
 const uploadS3 = multer({
 	storage: multerS3({
 		s3: s3,
-		bucket: process.env.BUCKET,
+		bucket: "bloghub-uploads",
 		acl: "public-read",
 		metadata: function (req, file, cb) {
 			cb(null, { fieldName: file.fieldname });
@@ -64,7 +50,6 @@ const uploadS3 = multer({
 app.post("/:id/upload", uploadS3.single("file"), (req, res) => {
 	console.log("uploading");
 	const location = req.file.location;
-	console.log(location);
 	const id = req.params.id;
 	console.log(id);
 	Post.findByIdAndUpdate(id, { Img: location }, { new: true })
